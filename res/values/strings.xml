@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NFCReader</string>
+
+    <string name="record_type_bus">公交</string>
+    <string name="record_type_metro">地铁</string>
+</resources>

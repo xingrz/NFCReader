@@ -1,0 +1,12 @@
+.DS_Store
+
+out/
+bin/
+gen/
+
+.idea/
+*.properties
+*.iml
+
+# secret, get it yourself bitch.
+SectorKeyA.java

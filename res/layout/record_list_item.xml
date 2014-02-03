@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2014-02-01 13:00:57"
+            android:id="@+id/date"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/amount" />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="-2.00"
+            android:id="@+id/amount"
+            android:layout_alignParentTop="true" android:layout_alignParentRight="true"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="00 16 55 54 88 1f d5 fc 66 88 11 22 00 33 44 99"
+            android:id="@+id/raw"
+            android:layout_below="@+id/type" android:layout_toLeftOf="@+id/amount"
+            android:layout_alignParentLeft="true"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bus"
+            android:id="@+id/type"
+            android:layout_below="@+id/date"
+            android:layout_alignParentLeft="true" />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00004579"
+            android:id="@+id/terminal"
+            android:layout_below="@+id/date"
+            android:layout_toRightOf="@+id/type" android:layout_marginLeft="5dp" android:layout_toLeftOf="@+id/amount"/>
+</RelativeLayout>
