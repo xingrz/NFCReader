@@ -7,6 +7,8 @@
     <string name="toast_no_nfc">NFC is not available</string>
     <string name="toast_read_failed">Sorry, failed to read this card…</string>
 
+    <string name="title_card_id">Card ID: %s</string>
+
     <string name="record_type_bus">Bus</string>
     <string name="record_type_metro">Metro</string>
 </resources>

@@ -12,13 +12,33 @@ public class YctReader {
 
     private static final String TAG = YctReader.class.getSimpleName();
 
+    public static class YctReadResult {
+
+        private String id;
+        private List<YctRecord> records;
+
+        public YctReadResult(String id, List<YctRecord> records) {
+            this.id = id;
+            this.records = records;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public List<YctRecord> getRecords() {
+            return records;
+        }
+
+    }
+
     private NfcAdapter nfcAdapter;
 
     public YctReader(NfcAdapter nfcAdapter) {
         this.nfcAdapter = nfcAdapter;
     }
 
-    public List<YctRecord> readTag(Tag tag) throws IOException {
+    public YctReadResult read(Tag tag) throws IOException {
         MifareClassic mifare = MifareClassic.get(tag);
         if (mifare == null) {
             Log.e(TAG, "Can't get tag");
@@ -26,6 +46,10 @@ public class YctReader {
         }
 
         mifare.connect();
+
+        mifare.authenticateSectorWithKeyA(1, SectorKeyA.KEY);
+        byte[] sector1 = mifare.readBlock(mifare.sectorToBlock(1));
+        String id = hex(Arrays.copyOfRange(sector1, 5, 10));
 
         List<YctRecord> records = new ArrayList<YctRecord>();
 
@@ -56,7 +80,15 @@ public class YctReader {
             }
         });
 
-        return records;
+        return new YctReadResult(id, records);
+    }
+
+    private String hex(byte[] bytes) {
+        String result = "";
+        for (byte b : bytes) {
+            result += Integer.toString((b & 0xff) + 0x100, 16).substring(1);
+        }
+        return result;
     }
 
 }

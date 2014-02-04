@@ -54,7 +54,9 @@ public class MainActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
         if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
+            setTitle(R.string.app_name);
             recordListView.setVisibility(View.GONE);
+            recordListView.clear();
 
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             Log.i(TAG, "Tag: " + String.valueOf(tag));
@@ -62,24 +64,23 @@ public class MainActivity extends Activity {
             byte[] id = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
             Log.i(TAG, "ID: " + hex(id));
 
-            setTitle(hex(id));
-
-            List<YctRecord> records;
+            YctReader.YctReadResult result;
 
             try {
-                records = yctReader.readTag(tag);
+                result = yctReader.read(tag);
             } catch (IOException e) {
                 Log.e(TAG, String.format("Failed to read card %s", hex(id)), e);
                 Toast.makeText(this, R.string.toast_read_failed, Toast.LENGTH_LONG).show();
                 return;
             }
 
-            if (records == null) {
+            if (result == null || result.getId() == null || result.getRecords() == null) {
                 return;
             }
 
-            recordListView.clear();
-            for (YctRecord record : records) {
+            setTitle(String.format(getString(R.string.title_card_id), result.getId()));
+
+            for (YctRecord record : result.getRecords()) {
                 recordListView.add(record);
             }
 
