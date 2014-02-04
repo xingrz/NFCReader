@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">羊城通</string>
+
+    <string name="read_hint">请将卡片放到手机后背…</string>
+
+    <string name="toast_no_nfc">NFC 功能不可用</string>
+    <string name="toast_read_failed">抱歉，读卡失败…</string>
+
+    <string name="record_type_bus">公交</string>
+    <string name="record_type_metro">地铁</string>
+</resources>

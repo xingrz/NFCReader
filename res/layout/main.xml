@@ -3,6 +3,11 @@
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent">
+    <us.xingrz.nfc.ui.RecordListView
+            android:id="@+id/records"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
     <LinearLayout
             android:id="@+id/hint"
             android:layout_width="match_parent"
@@ -12,11 +17,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Please put your card behind your phone..." />
+                android:text="@string/read_hint" />
     </LinearLayout>
-    <us.xingrz.nfc.RecordListView
-            android:id="@+id/records"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
 </LinearLayout>

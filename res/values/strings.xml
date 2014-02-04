@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">NFCReader</string>
+    <string name="app_name">YCT</string>
 
-    <string name="record_type_bus">公交</string>
-    <string name="record_type_metro">地铁</string>
+    <string name="read_hint">Please put your card behind your phone…</string>
+
+    <string name="toast_no_nfc">NFC is not available</string>
+    <string name="toast_read_failed">Sorry, failed to read this card…</string>
+
+    <string name="record_type_bus">Bus</string>
+    <string name="record_type_metro">Metro</string>
 </resources>

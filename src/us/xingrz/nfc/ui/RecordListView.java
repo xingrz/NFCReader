@@ -1,4 +1,4 @@
-package us.xingrz.nfc;
+package us.xingrz.nfc.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,9 +8,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import us.xingrz.nfc.R;
+import us.xingrz.nfc.yct.YctRecord;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -40,9 +43,9 @@ public class RecordListView extends ListView {
                 view = LayoutInflater.from(context).inflate(R.layout.record_list_item, viewGroup, false);
             }
 
-            Record record = records.get(i);
+            YctRecord record = records.get(i);
 
-            ((TextView) view.findViewById(R.id.type)).setText(formatMean(context, record.getMean()));
+            ((TextView) view.findViewById(R.id.type)).setText(formatMean(context, record.getRaw()));
             ((TextView) view.findViewById(R.id.amount)).setText(formatAmount(record.getAmount()));
             ((TextView) view.findViewById(R.id.date)).setText(formatDate(record.getDate()));
             ((TextView) view.findViewById(R.id.terminal)).setText(record.getTerminalId());
@@ -53,7 +56,7 @@ public class RecordListView extends ListView {
 
         private String formatRaw(byte[] bytes) {
             String result = "";
-            for (byte b : bytes) {
+            for (byte b : Arrays.copyOfRange(bytes, 0, 4)) {
                 result += Integer.toString((b & 0xff) + 0x100, 16).substring(1) + " ";
             }
             return result.trim();
@@ -77,11 +80,11 @@ public class RecordListView extends ListView {
             return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
         }
 
-        private String formatMean(Context context, Record.Mean mean) {
-            switch (mean) {
-                case BUS:
+        private String formatMean(Context context, byte[] bytes) {
+            switch (bytes[0]) {
+                case 0x00:
                     return context.getString(R.string.record_type_bus);
-                case METRO:
+                case 0x10:
                     return context.getString(R.string.record_type_metro);
                 default:
                     return "";
@@ -90,7 +93,7 @@ public class RecordListView extends ListView {
 
     }
 
-    private List<Record> records = new ArrayList<Record>();
+    private List<YctRecord> records = new ArrayList<YctRecord>();
     private RecordAdapter recordAdapter = new RecordAdapter();
 
     public RecordListView(Context context) {
@@ -113,7 +116,7 @@ public class RecordListView extends ListView {
         setAdapter(recordAdapter);
     }
 
-    public void add(Record record) {
+    public void add(YctRecord record) {
         records.add(record);
         recordAdapter.notifyDataSetChanged();
     }

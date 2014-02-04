@@ -1,4 +1,6 @@
-package us.xingrz.nfc;
+package us.xingrz.nfc.yct;
+
+import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -6,18 +8,15 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-public class Record {
+public class YctRecord {
 
-    public enum Mean {
-        BUS,
-        METRO
-    }
+    private static final String TAG = YctRecord.class.getSimpleName();
 
-    public static Record parse(byte[] raw) {
+    public static YctRecord parse(byte[] raw) {
         // offset 0 - 3 is not clear
 
         // offset 0 or 1 : Mean?
-        Mean mean = raw[0] == 0x00 ? Mean.BUS : Mean.METRO;
+        //Mean mean = raw[0] == 0x00 ? Mean.BUS : Mean.METRO;
 
         // offset 2 == 20 is Charge?
         boolean isCharge = raw[2] == 20;
@@ -32,7 +31,37 @@ public class Record {
         // offset 10 - 15 : Date
         Date date = parseDate(raw);
 
-        return new Record(mean, amount, date, terminalId, Arrays.copyOfRange(raw, 0, 4));
+        Log.d(TAG, String.format(
+                "Parsed: YctRecord[%s amount/%s terminal/%s date/%s]",
+                hex(Arrays.copyOfRange(raw, 0, 4)),
+                formatAmount(amount),
+                terminalId,
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date)
+        ));
+
+        return new YctRecord(amount, date, terminalId, raw);
+    }
+
+    private static String hex(byte[] bytes) {
+        String result = "";
+        for (byte b : bytes) {
+            result += Integer.toString((b & 0xff) + 0x100, 16).substring(1);
+        }
+        return result;
+    }
+
+    private static String formatAmount(float price) {
+        String result = String.valueOf(price);
+
+        if (result.substring(result.indexOf(".") + 1).length() == 1) {
+            result += "0";
+        }
+
+        if (price > 0) {
+            result = "+" + result;
+        }
+
+        return result;
     }
 
     private static float parseAmount(byte[] bytes) {
@@ -40,23 +69,7 @@ public class Record {
     }
 
     private static String parseTerminalId(byte[] bytes) {
-        final int offset = 6;
-        final int length = 4;
-
-        final char a[] = {
-                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                'A', 'B', 'C', 'D', 'E', 'F'
-        };
-
-        char ac[] = new char[length * 2];
-
-        for (int i = 0; i < length; i++) {
-            byte byte0 = bytes[offset + i];
-            ac[i * 2] = a[0xf & byte0 >> 4];
-            ac[i * 2 + 1] = a[0xf & byte0];
-        }
-
-        return new String(ac);
+        return hex(Arrays.copyOfRange(bytes, 6, 10));
     }
 
     private static Date parseDate(byte[] bytes) {
@@ -68,22 +81,16 @@ public class Record {
         }
     }
 
-    private Mean mean;
     private float amount;
     private Date date;
     private String terminalId;
     private byte[] raw;
 
-    public Record(Mean mean, float amount, Date date, String terminalId, byte[] raw) {
-        this.mean = mean;
+    public YctRecord(float amount, Date date, String terminalId, byte[] raw) {
         this.amount = amount;
         this.date = date;
         this.terminalId = terminalId;
         this.raw = raw;
-    }
-
-    public Mean getMean() {
-        return mean;
     }
 
     public float getAmount() {
