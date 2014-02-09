@@ -7,8 +7,10 @@
     <string name="toast_no_nfc">NFC 功能不可用</string>
     <string name="toast_read_failed">抱歉，读卡失败…</string>
 
-    <string name="title_card_id">卡号: %s</string>
+    <string name="record_type_bus">公交消费</string>
+    <string name="record_type_metro">地铁消费</string>
+    <string name="record_type_shop">购物消费</string>
+    <string name="record_type_recharge">充值</string>
 
-    <string name="record_type_bus">公交</string>
-    <string name="record_type_metro">地铁</string>
+    <string name="unknown">未知</string>
 </resources>
