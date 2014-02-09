@@ -8,15 +8,12 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-public class YctRecord {
+public class YctTransaction {
 
-    private static final String TAG = YctRecord.class.getSimpleName();
+    private static final String TAG = YctTransaction.class.getSimpleName();
 
-    public static YctRecord parse(byte[] raw) {
+    public static YctTransaction parse(byte[] raw) {
         // offset 0 - 3 is not clear
-
-        // offset 0 or 1 : Mean?
-        //Mean mean = raw[0] == 0x00 ? Mean.BUS : Mean.METRO;
 
         // offset 2 == 20 is Charge?
         boolean isCharge = raw[2] == 20;
@@ -31,15 +28,7 @@ public class YctRecord {
         // offset 10 - 15 : Date
         Date date = parseDate(raw);
 
-        Log.d(TAG, String.format(
-                "Parsed: YctRecord[%s amount/%s terminal/%s date/%s]",
-                hex(Arrays.copyOfRange(raw, 0, 4)),
-                formatAmount(amount),
-                terminalId,
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date)
-        ));
-
-        return new YctRecord(amount, date, terminalId, raw);
+        return new YctTransaction(amount, date, terminalId, raw);
     }
 
     private static String hex(byte[] bytes) {
@@ -47,20 +36,6 @@ public class YctRecord {
         for (byte b : bytes) {
             result += Integer.toString((b & 0xff) + 0x100, 16).substring(1);
         }
-        return result;
-    }
-
-    private static String formatAmount(float price) {
-        String result = String.valueOf(price);
-
-        if (result.substring(result.indexOf(".") + 1).length() == 1) {
-            result += "0";
-        }
-
-        if (price > 0) {
-            result = "+" + result;
-        }
-
         return result;
     }
 
@@ -86,7 +61,7 @@ public class YctRecord {
     private String terminalId;
     private byte[] raw;
 
-    public YctRecord(float amount, Date date, String terminalId, byte[] raw) {
+    public YctTransaction(float amount, Date date, String terminalId, byte[] raw) {
         this.amount = amount;
         this.date = date;
         this.terminalId = terminalId;

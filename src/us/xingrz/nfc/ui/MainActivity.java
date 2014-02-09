@@ -1,22 +1,22 @@
 package us.xingrz.nfc.ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.nfc.*;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import us.xingrz.nfc.R;
-import us.xingrz.nfc.yct.YctRecord;
+import us.xingrz.nfc.yct.YctInfo;
+import us.xingrz.nfc.yct.YctTransaction;
 import us.xingrz.nfc.yct.YctReader;
 
 import java.io.IOException;
-import java.util.List;
+import java.text.SimpleDateFormat;
 
 public class MainActivity extends Activity {
 
@@ -54,9 +54,7 @@ public class MainActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
         if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
-            setTitle(R.string.app_name);
-            recordListView.setVisibility(View.GONE);
-            recordListView.clear();
+            findViewById(R.id.result).setVisibility(View.GONE);
 
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             Log.i(TAG, "Tag: " + String.valueOf(tag));
@@ -64,7 +62,7 @@ public class MainActivity extends Activity {
             byte[] id = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
             Log.i(TAG, "ID: " + hex(id));
 
-            YctReader.YctReadResult result;
+            YctInfo result;
 
             try {
                 result = yctReader.read(tag);
@@ -74,17 +72,53 @@ public class MainActivity extends Activity {
                 return;
             }
 
-            if (result == null || result.getId() == null || result.getRecords() == null) {
+            if (result == null || TextUtils.isEmpty(result.getId()) || result.getTransactions() == null) {
+                Toast.makeText(this, R.string.toast_read_failed, Toast.LENGTH_LONG).show();
                 return;
             }
 
-            setTitle(String.format(getString(R.string.title_card_id), result.getId()));
+            ((TextView) findViewById(R.id.detail_id)).setText(result.getId());
+            ((TextView) findViewById(R.id.detail_balance)).setText(formatBalance(result.getBalance()));
 
-            for (YctRecord record : result.getRecords()) {
-                recordListView.add(record);
+            ((TextView) findViewById(R.id.detail_expires)).setText(
+                    result.getExpiresAt() == null
+                            ? getString(R.string.unknown)
+                            : new SimpleDateFormat("yyyy-MM-dd").format(result.getExpiresAt())
+            );
+
+            ((TextView) findViewById(R.id.detail_month)).setText(
+                    result.getCurrentMonth() == null
+                            ? getString(R.string.unknown)
+                            : new SimpleDateFormat("yyyy-MM").format(result.getCurrentMonth())
+            );
+
+            ((TextView) findViewById(R.id.detail_count_bus)).setText(
+                    result.getCurrentMonth() == null
+                            ? getString(R.string.unknown)
+                            : String.valueOf(result.getMonthlyBusCount())
+            );
+
+            ((TextView) findViewById(R.id.detail_count_metro)).setText(
+                    result.getCurrentMonth() == null
+                            ? getString(R.string.unknown)
+                            : String.valueOf(result.getMonthlyMetroCount())
+            );
+
+            ((TextView) findViewById(R.id.detail_count)).setText(
+                    result.getCurrentMonth() == null
+                            ? getString(R.string.unknown)
+                            : String.valueOf(result.getMonthlyTotalCount())
+            );
+
+            recordListView.clear();
+
+            if (result.getTransactions() != null) {
+                for (YctTransaction transaction : result.getTransactions()) {
+                    recordListView.add(transaction);
+                }
             }
 
-            recordListView.setVisibility(View.VISIBLE);
+            findViewById(R.id.result).setVisibility(View.VISIBLE);
 
             if (vibrator != null && vibrator.hasVibrator()) {
                 vibrator.vibrate(100);
@@ -98,6 +132,16 @@ public class MainActivity extends Activity {
             result += Integer.toString((b & 0xff) + 0x100, 16).substring(1) + " ";
         }
         return result.trim();
+    }
+
+    private String formatBalance(float price) {
+        String result = String.valueOf(price);
+
+        if (result.substring(result.indexOf(".") + 1).length() == 1) {
+            result += "0";
+        }
+
+        return result;
     }
 
 }

@@ -11,4 +11,8 @@
 
     <string name="record_type_bus">Bus</string>
     <string name="record_type_metro">Metro</string>
+    <string name="record_type_shop">Shop</string>
+    <string name="record_type_recharge">Recharge</string>
+
+    <string name="unknown">Unknown</string>
 </resources>

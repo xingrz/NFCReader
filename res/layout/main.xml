@@ -3,11 +3,143 @@
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent">
-    <us.xingrz.nfc.ui.RecordListView
-            android:id="@+id/records"
+
+    <RelativeLayout
+            android:id="@+id/result"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:visibility="gone">
+        <RelativeLayout
+                android:id="@+id/details"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+            <TextView
+                    android:id="@+id/detail_balance"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@android:color/holo_green_dark"
+                    android:typeface="monospace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:text="87.53" />
+            <TableLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/detail_balance">
+                <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="8dp"
+                            android:textColor="@android:color/secondary_text_light"
+                            android:text="卡号" />
+                    <TextView
+                            android:id="@+id/detail_id"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0277348214"/>
+                </TableRow>
+                <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="8dp"
+                            android:textColor="@android:color/secondary_text_light"
+                            android:text="有效期至" />
+                    <TextView
+                            android:id="@+id/detail_expires"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2018-12-31"/>
+                </TableRow>
+                <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="8dp"
+                            android:textColor="@android:color/secondary_text_light"
+                            android:text="当前月份" />
+                    <TextView
+                            android:id="@+id/detail_month"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2014-02"/>
+                </TableRow>
+                <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="8dp"
+                            android:textColor="@android:color/secondary_text_light"
+                            android:text="公交次数" />
+                    <TextView
+                            android:id="@+id/detail_count_bus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="13"/>
+                </TableRow>
+                <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="8dp"
+                            android:textColor="@android:color/secondary_text_light"
+                            android:text="地铁次数" />
+                    <TextView
+                            android:id="@+id/detail_count_metro"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="7"/>
+                </TableRow>
+                <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="8dp"
+                            android:textColor="@android:color/secondary_text_light"
+                            android:text="总次数" />
+                    <TextView
+                            android:id="@+id/detail_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="20"/>
+                </TableRow>
+            </TableLayout>
+        </RelativeLayout>
+        <us.xingrz.nfc.ui.RecordListView
+                android:id="@+id/records"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true" android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true" android:layout_below="@+id/details"/>
+    </RelativeLayout>
     <LinearLayout
             android:id="@+id/hint"
             android:layout_width="match_parent"

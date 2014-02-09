@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import us.xingrz.nfc.R;
-import us.xingrz.nfc.yct.YctRecord;
+import us.xingrz.nfc.yct.YctTransaction;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class RecordListView extends ListView {
                 view = LayoutInflater.from(context).inflate(R.layout.record_list_item, viewGroup, false);
             }
 
-            YctRecord record = records.get(i);
+            YctTransaction record = records.get(i);
 
             ((TextView) view.findViewById(R.id.type)).setText(formatMean(context, record.getRaw()));
             ((TextView) view.findViewById(R.id.amount)).setText(formatAmount(record.getAmount()));
@@ -80,20 +80,25 @@ public class RecordListView extends ListView {
             return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
         }
 
-        private String formatMean(Context context, byte[] bytes) {
-            switch (bytes[0]) {
-                case 0x00:
-                    return context.getString(R.string.record_type_bus);
-                case 0x10:
-                    return context.getString(R.string.record_type_metro);
-                default:
-                    return "";
+        private String formatMean(Context context, byte[] record) {
+            if (record[0] == 0x00 && record[1] == 0x00 && record[2] == 0x17) {
+                return context.getString(R.string.record_type_shop);
             }
+
+            if (record[0] == 0x00 && record[1] == 0x01 && record[2] == 0x17) {
+                return context.getString(R.string.record_type_bus);
+            }
+
+            if (record[0] == 0x10 && record[1] == 0x00 && record[2] == 0x12) {
+                return context.getString(R.string.record_type_metro);
+            }
+
+            return context.getString(R.string.unknown);
         }
 
     }
 
-    private List<YctRecord> records = new ArrayList<YctRecord>();
+    private List<YctTransaction> records = new ArrayList<YctTransaction>();
     private RecordAdapter recordAdapter = new RecordAdapter();
 
     public RecordListView(Context context) {
@@ -116,7 +121,7 @@ public class RecordListView extends ListView {
         setAdapter(recordAdapter);
     }
 
-    public void add(YctRecord record) {
+    public void add(YctTransaction record) {
         records.add(record);
         recordAdapter.notifyDataSetChanged();
     }
