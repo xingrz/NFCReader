@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
+
     <string name="app_name">羊城通</string>
 
     <string name="read_hint">请将卡片放到手机后背…</string>
@@ -13,4 +15,11 @@
     <string name="record_type_recharge">充值</string>
 
     <string name="unknown">未知</string>
+
+    <string-array name="modules">
+        <item>基本信息</item>
+        <item>交易记录</item>
+        <item>地铁</item>
+    </string-array>
+
 </resources>

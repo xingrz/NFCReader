@@ -53,8 +53,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
+
         if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
-            findViewById(R.id.result).setVisibility(View.GONE);
+            startActivity(new Intent(this, ReaderActivity.class).setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+
+            /*findViewById(R.id.result).setVisibility(View.GONE);
 
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             Log.i(TAG, "Tag: " + String.valueOf(tag));
@@ -122,7 +125,7 @@ public class MainActivity extends Activity {
 
             if (vibrator != null && vibrator.hasVibrator()) {
                 vibrator.vibrate(100);
-            }
+            }*/
         }
     }
 
