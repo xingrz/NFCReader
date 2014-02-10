@@ -12,17 +12,19 @@ import us.xingrz.nfc.yct.YctTransaction;
 
 public class TransactionsFragment extends Fragment {
 
-    ReaderActivity activity;
-    TransactionListView transactionListView;
+    private View rootView;
+    private ReaderActivity activity;
+
+    private TransactionListView transactionListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.transactions_fragment, container, false);
-
+        rootView = inflater.inflate(R.layout.transactions_fragment, container, false);
         activity = (ReaderActivity) getActivity();
-        transactionListView = (TransactionListView) view.findViewById(R.id.transactions);
 
-        return view;
+        transactionListView = (TransactionListView) rootView.findViewById(R.id.transactions);
+
+        return rootView;
     }
 
     @Override

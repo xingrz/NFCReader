@@ -19,10 +19,10 @@ public class ReaderActivity extends FragmentActivity
 
     private static final String TAG = ReaderActivity.class.getSimpleName();
 
-    ViewPager viewPager;
-    ActionBar actionBar;
+    private ViewPager viewPager;
+    private ActionBar actionBar;
 
-    YctInfo yctInfo;
+    private YctInfo yctInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
