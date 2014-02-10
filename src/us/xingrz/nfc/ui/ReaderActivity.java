@@ -29,13 +29,14 @@ public class ReaderActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reader_activity);
 
+        /* retrieve result */
         yctInfo = getIntent().getParcelableExtra("result");
         if (yctInfo == null) {
             Toast.makeText(this, R.string.toast_read_failed, Toast.LENGTH_LONG).show();
             return;
         }
 
-        Log.d(TAG, yctInfo.getId());
+        Log.d(TAG, String.format("Reading card %s", yctInfo.getId()));
 
         /* setup view pager */
         viewPager = (ViewPager) findViewById(R.id.reader_pager);
