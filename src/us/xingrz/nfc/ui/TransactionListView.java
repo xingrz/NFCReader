@@ -93,6 +93,10 @@ public class TransactionListView extends ListView {
                 return context.getString(R.string.record_type_metro);
             }
 
+            if (record[0] == 0x20 && record[1] == 0x32 && record[2] == 0x14) {
+                return context.getString(R.string.record_type_recharge);
+            }
+
             return context.getString(R.string.unknown);
         }
 
