@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class RecordListView extends ListView {
+public class TransactionListView extends ListView {
 
     public class RecordAdapter extends BaseAdapter {
         @Override
@@ -40,7 +40,7 @@ public class RecordListView extends ListView {
             Context context = getContext();
 
             if (view == null) {
-                view = LayoutInflater.from(context).inflate(R.layout.record_list_item, viewGroup, false);
+                view = LayoutInflater.from(context).inflate(R.layout.transactions_list_item, viewGroup, false);
             }
 
             YctTransaction record = records.get(i);
@@ -101,17 +101,17 @@ public class RecordListView extends ListView {
     private List<YctTransaction> records = new ArrayList<YctTransaction>();
     private RecordAdapter recordAdapter = new RecordAdapter();
 
-    public RecordListView(Context context) {
+    public TransactionListView(Context context) {
         super(context);
         init();
     }
 
-    public RecordListView(Context context, AttributeSet attrs) {
+    public TransactionListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public RecordListView(Context context, AttributeSet attrs, int defStyle) {
+    public TransactionListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
