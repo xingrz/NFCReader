@@ -7,25 +7,48 @@ import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 
+import android.util.Log;
 import android.view.MenuItem;
+
+import android.widget.Toast;
 import us.xingrz.nfc.R;
+import us.xingrz.nfc.yct.YctInfo;
 
 public class ReaderActivity extends FragmentActivity
         implements ActionBar.TabListener, ViewPager.OnPageChangeListener {
 
+    private static final String TAG = ReaderActivity.class.getSimpleName();
+
     ViewPager viewPager;
     ActionBar actionBar;
+
+    YctInfo yctInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reader_activity);
 
+        yctInfo = getIntent().getParcelableExtra("result");
+        if (yctInfo == null) {
+            Toast.makeText(this, R.string.toast_read_failed, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Log.d(TAG, yctInfo.getId());
+
+        /* setup view pager */
         viewPager = (ViewPager) findViewById(R.id.reader_pager);
         viewPager.setAdapter(new ResultFragmentPagerAdapter(getSupportFragmentManager()));
         viewPager.setOnPageChangeListener(this);
 
+        /* setup action bar */
         actionBar = getActionBar();
+        if (actionBar == null) {
+            finish();
+            return;
+        }
+
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -108,6 +131,10 @@ public class ReaderActivity extends FragmentActivity
         public CharSequence getPageTitle(int position) {
             return super.getPageTitle(position);
         }
+    }
+
+    public YctInfo getYctInfo() {
+        return yctInfo;
     }
 
 }
