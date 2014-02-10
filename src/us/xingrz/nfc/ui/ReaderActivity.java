@@ -63,6 +63,12 @@ public class ReaderActivity extends FragmentActivity
     }
 
     @Override
+    protected void onPause() {
+        overridePendingTransition(0, android.R.anim.fade_out);
+        super.onPause();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
