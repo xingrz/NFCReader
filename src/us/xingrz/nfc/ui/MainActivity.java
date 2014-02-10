@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.nfc.*;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,18 +23,15 @@ public class MainActivity extends Activity {
 
     private static final String TAG = "NFCReader";
 
-    private NfcAdapter nfcAdapter;
-    private YctReader yctReader;
-
-    private Vibrator vibrator;
-
-    private RecordListView recordListView;
+    NfcAdapter nfcAdapter;
+    YctReader yctReader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        /* setup nfc adapter */
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter == null) {
             Toast.makeText(this, getString(R.string.toast_no_nfc), Toast.LENGTH_LONG).show();
@@ -41,11 +39,8 @@ public class MainActivity extends Activity {
             return;
         }
 
+        /* setup yct reader */
         yctReader = new YctReader(nfcAdapter);
-
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-
-        recordListView = (RecordListView) findViewById(R.id.records);
 
         onNewIntent(getIntent());
     }
@@ -53,76 +48,42 @@ public class MainActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
-        if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
-            findViewById(R.id.result).setVisibility(View.GONE);
 
+        if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             Log.i(TAG, "Tag: " + String.valueOf(tag));
 
             byte[] id = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
             Log.i(TAG, "ID: " + hex(id));
 
-            YctInfo result;
+            YctInfo yctInfo;
 
             try {
-                result = yctReader.read(tag);
+                yctInfo = yctReader.read(tag);
             } catch (IOException e) {
                 Log.e(TAG, String.format("Failed to read card %s", hex(id)), e);
                 Toast.makeText(this, R.string.toast_read_failed, Toast.LENGTH_LONG).show();
                 return;
             }
 
-            if (result == null || TextUtils.isEmpty(result.getId()) || result.getTransactions() == null) {
+            if (yctInfo == null || TextUtils.isEmpty(yctInfo.getId()) || yctInfo.getTransactions() == null) {
                 Toast.makeText(this, R.string.toast_read_failed, Toast.LENGTH_LONG).show();
                 return;
             }
 
-            ((TextView) findViewById(R.id.detail_id)).setText(result.getId());
-            ((TextView) findViewById(R.id.detail_balance)).setText(formatBalance(result.getBalance()));
+            vibrate();
 
-            ((TextView) findViewById(R.id.detail_expires)).setText(
-                    result.getExpiresAt() == null
-                            ? getString(R.string.unknown)
-                            : new SimpleDateFormat("yyyy-MM-dd").format(result.getExpiresAt())
-            );
+            Intent resultIntent = new Intent(this, ReaderActivity.class);
+            resultIntent.putExtra("result", yctInfo);
+            resultIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(resultIntent);
+        }
+    }
 
-            ((TextView) findViewById(R.id.detail_month)).setText(
-                    result.getCurrentMonth() == null
-                            ? getString(R.string.unknown)
-                            : new SimpleDateFormat("yyyy-MM").format(result.getCurrentMonth())
-            );
-
-            ((TextView) findViewById(R.id.detail_count_bus)).setText(
-                    result.getCurrentMonth() == null
-                            ? getString(R.string.unknown)
-                            : String.valueOf(result.getMonthlyBusCount())
-            );
-
-            ((TextView) findViewById(R.id.detail_count_metro)).setText(
-                    result.getCurrentMonth() == null
-                            ? getString(R.string.unknown)
-                            : String.valueOf(result.getMonthlyMetroCount())
-            );
-
-            ((TextView) findViewById(R.id.detail_count)).setText(
-                    result.getCurrentMonth() == null
-                            ? getString(R.string.unknown)
-                            : String.valueOf(result.getMonthlyTotalCount())
-            );
-
-            recordListView.clear();
-
-            if (result.getTransactions() != null) {
-                for (YctTransaction transaction : result.getTransactions()) {
-                    recordListView.add(transaction);
-                }
-            }
-
-            findViewById(R.id.result).setVisibility(View.VISIBLE);
-
-            if (vibrator != null && vibrator.hasVibrator()) {
-                vibrator.vibrate(100);
-            }
+    private void vibrate() {
+        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            vibrator.vibrate(100);
         }
     }
 
@@ -132,16 +93,6 @@ public class MainActivity extends Activity {
             result += Integer.toString((b & 0xff) + 0x100, 16).substring(1) + " ";
         }
         return result.trim();
-    }
-
-    private String formatBalance(float price) {
-        String result = String.valueOf(price);
-
-        if (result.substring(result.indexOf(".") + 1).length() == 1) {
-            result += "0";
-        }
-
-        return result;
     }
 
 }

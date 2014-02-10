@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
+
     <string name="app_name">YCT</string>
 
     <string name="read_hint">Please put your card behind your phone…</string>
@@ -7,12 +9,17 @@
     <string name="toast_no_nfc">NFC is not available</string>
     <string name="toast_read_failed">Sorry, failed to read this card…</string>
 
-    <string name="title_card_id">Card ID: %s</string>
-
     <string name="record_type_bus">Bus</string>
     <string name="record_type_metro">Metro</string>
     <string name="record_type_shop">Shop</string>
     <string name="record_type_recharge">Recharge</string>
 
     <string name="unknown">Unknown</string>
+
+    <string-array name="modules">
+        <item>General</item>
+        <item>Transactions</item>
+        <item>Metro</item>
+    </string-array>
+
 </resources>

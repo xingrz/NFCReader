@@ -1,6 +1,7 @@
 package us.xingrz.nfc.yct;
 
-import android.util.Log;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -8,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-public class YctTransaction {
+public class YctTransaction implements Parcelable {
 
     private static final String TAG = YctTransaction.class.getSimpleName();
 
@@ -83,4 +84,39 @@ public class YctTransaction {
     public byte[] getRaw() {
         return raw;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeFloat(amount);
+        parcel.writeLong(date.getTime());
+        parcel.writeString(terminalId);
+        parcel.writeValue(raw);
+    }
+
+    public static final Creator<YctTransaction> CREATOR = new Creator<YctTransaction>() {
+        @Override
+        public YctTransaction createFromParcel(Parcel parcel) {
+            float amount = parcel.readFloat();
+
+            Date date = new Date();
+            date.setTime(parcel.readLong());
+
+            String terminalId = parcel.readString();
+
+            byte[] raw = (byte[]) parcel.readValue(byte.class.getClassLoader());
+
+            return new YctTransaction(amount, date, terminalId, raw);
+        }
+
+        @Override
+        public YctTransaction[] newArray(int i) {
+            return new YctTransaction[0];
+        }
+    };
+
 }
